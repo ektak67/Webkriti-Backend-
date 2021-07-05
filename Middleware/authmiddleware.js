@@ -9,17 +9,17 @@ exports.requireLogIn = (req, res, next) => {
         error: "Server error occured" ,
       });
     }
-    const userEmail = decoded.email;
+    const userId = decoded.user_id;
 
     client
-      .query(`SELECT * FROM users WHERE email = '${userEmail}';`)
+      .query(`SELECT * FROM Users WHERE user_id = '${userId}';`)
       .then((data) => {
         if (data.rows.length === 0) {
           res.status(400).json({
             message: "Invalid token",
           });
         } else {
-          req.email = userEmail;
+          req.user_id= userId;
           next();
         }
       })

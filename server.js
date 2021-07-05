@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/post");
+const postRoutes = require("./routes/user");
+const client = require("./configs/database");
 
 
 const app = express();
@@ -18,7 +20,11 @@ app.get("/", (req, res) => {
 
 app.use("/auth",authRoutes);
 app.use("/post",postRoutes);
+app.use("/user",userRoutes);
 
+client.connect(() => {
+  console.log("Database connected")
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
