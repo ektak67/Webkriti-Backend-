@@ -1,12 +1,14 @@
 const bcrypt = require('bcrypt');
+const { request } = require('express');
 const jwt = require('jsonwebtoken');
 const client = require("../configs/db");
 
 exportS.allPost = (req, res) => {
-    posts = client.query(`SELECT post_id ,userId name , caption , post_url FROM posts`),
+    const {username , user_id , caption , snap } = req.body
+    client.query(`SELECT post_id ,userId name , caption , post_url FROM posts ORDER BY date_created`),
     clinet.query(`SELECT content ,userId name FROM comments`) 
-    .then(posts=>{
-        res.json({posts})
+    .then((data)=>{
+        res.json({data})
     })
     .catch(err=>{
         console.log(err)
@@ -15,13 +17,10 @@ exportS.allPost = (req, res) => {
 
 exportS.allfollowPost = (req, res) => {
     const { post_url , content} = req.body ;
-    client.query(`SELECT `)
-    Post.find({postedBy:{$in:req.user.following}})
-    .populate("postedBy","userId name")
-     .populate("comments.postedBy","userId name")
-     .sort('-createdAt')
-    .then(posts=>{
-        res.json({posts})
+    client.query(`SELECT post_id ,userId name , caption , post_url FROM posts ORDER BY date_created`)
+   
+    .then((data)=>{
+        res.json({data})
     })
     .catch(err=>{
         console.log(err)
@@ -31,21 +30,19 @@ exportS.allfollowPost = (req, res) => {
 
 exportS.createPost = (req, res) => {
     const { caption ,snap} = req.body 
-
+   
     if(!snap ){
         return res.status(400).json ({
             error : "Add Post!",
         })
     }
-
-    req.user.password = undefined;
     const post = new Post ( {
         caption,
         photo : snap ,
         postedBy : req.user
     })
 
-    post.save()
+    client.query(`INSERT INTO posts (caption , post_url) VALUES ('${caption}' , '${photo}')  WHERE user_id = '${user_id}` )
     .then(result => {
         res.json({
             post : result
@@ -53,14 +50,16 @@ exportS.createPost = (req, res) => {
     })
 
     .catch(err => {
-        console.log(err)
+        console.log("Failed to Upload !!")
     })
 }
 
 
 exportS.myPost = (req, res) => {
+    const id = req.userId ;
+    const {username , snap , caption } = request.body
     mypost = client.query(
-        `SELECT * FROM POSTS WHERE user_id = '${req.userId}'`
+        `SELECT * FROM POSTS WHERE user_id = '$1'`, [id]
     )
     .then(mypost =>{
         res.json({mypost})
@@ -71,39 +70,31 @@ exportS.myPost = (req, res) => {
 }
 
 exportS(like )=(req,res)=>{
-    const {like } = req.body;
-    // Post.findByIdAndUpdate(req.body.postId,{
-    //     $push:{likes:req.user._id}
-    // },{
-    //     new:true
-    // })
-    // .populate("postedBy","_id name")
-    // .populate("comments.postedBy","_id name")
-    client.query(`INSERT INTO `)
-    .exec((err,result)=>{
-        if(err){
-            return res.status(422).json({error:err})
-        }else{
-            res.json(result)
-        }
+    const {user_id , post_id } = req.body;
+    client.query(`INSERT INTO Likes (user_id , posr_id) Values (${Likes.user_id , Likes.post_id})`)
+    .then((data)=>{
+            return res.status(200).json({message : "Liked"})
     })
+        .catch(err => {
+           return res.status(422).json({
+               err : err 
+           })
+        }
+    )
 }
 exportS(dislike) =(req,res)=>{
-    
-    Post.findByIdAndUpdate(req.body.postId,{
-        $pull:{likes:req.user._id}
-    },{
-        new:true
+    const {user_id , post_id } = req.body;
+    client.query(`DELETE FROM Likes WHERE user_id = `)
+    .then((data)=>{
+            return res.status(200).json({message : "Unliked"})
     })
-    .populate("postedBy","_id name")
-    .populate("comments.postedBy","_id name")
-    .exec((err,result)=>{
-        if(err){
-            return res.status(422).json({error:err})
-        }else{
-            res.json(result)
+        .catch(err => {
+           return res.status(422).json({
+               err : err 
+           })
         }
-    })
+    )
+    
 }
 
 
@@ -114,13 +105,6 @@ exportS.comment = (req, res) => {
     }
     client.query(`INSERT INTO comments (content) VALUES ('${comment.content}');`)
     client.query(`SELECT comments content , post_id WHERE post_id = '${post_id}' `)
-    // Post.findByIdAndUpdate(req.body.postId,{
-    //     $push:{comments:comment}
-    // },{
-    //     new:true
-    // })
-    // .populate("comments.postedBy","userId name")
-    // .populate("postedBy","userId name") 
     .then((err,result)=>{
         if(err){
             return res.status(422).json({error:err})
@@ -133,45 +117,25 @@ exportS.comment = (req, res) => {
 
 
 exportS.deletePost = (req, res) => {
-    const{ postedBy : user_id };
-    client.query(`DELETE FROM posts Where user_id IS userId ;`)
-    // .populate("postedBy","userId")
-    .exec((err,post)=>{
-        if(err || !post){
-            return res.status(422).json({
-                error:"Failed To Delete"
-            })
-        }
-        if(post.postedBy._id.toString() === req.user._id.toString()){
-            post.remove()
-            .then(result=>{
-                res.json(result)
-            }).catch(err=>{
-                console.log(err)
-            })
-        }
-    })
+    const id  = parseInt(request.params.user_id);
+    client.query(`DELETE FROM posts Where user_id = $1 ` ,[id] )
+    .then( () =>{
+        res.status(200).json({message : "Post Deleted"})
+      })
+    .catch(err => {
+          return res.status(422).json({message : "Failed to  Delete"})
+      })
 }
 
 
 exportS.deleteComment = (req, res) => {
-    client.query(`DELETE FROM comment Where user_id IS userId ;`)
-    // Post.findByIdAndUpdate({_id:req.params.postId},{
-    //     $pull:{comments:{_id : req.params.commentId}}
-    // },{
-    //     new:true
-    // })
-    // .populate("comments.postedBy","userId name")
-    .exec((err,post)=>{
-        if(err || !post){
-            return res.status(422).json({
-                error:"UNSECCUSSFULL "
-            })
-        }
-        else{
-            res.json({
-                message : "Comment Deleted"
-            })
-        }
+    const id  = parseInt(request.params.user_id);
+    client.query(`DELETE FROM comments Where user_id = $1 ` ,[id] )
+    .then( () =>{
+      res.status(200).json({message : "Comment Deleted"})
     })
+    .catch(err => {
+        return res.status(422).json({message : "Failed to  Delete"})
+    })
+
 }

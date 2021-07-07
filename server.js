@@ -22,9 +22,7 @@ app.use("/auth",authRoutes);
 app.use("/post",postRoutes);
 app.use("/user",userRoutes);
 
-client.connect(() => {
-  console.log("Database connected")
-});
+
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

@@ -1,56 +1,66 @@
 const bcrypt = require('bcrypt');
+const { query } = require('express');
 const jwt = require('jsonwebtoken');
 const client = require("../configs/database");
 
-// exportS.Id = (req, res) =>{
-//     User.findOne({_id:req.params.id})
-//     .select("-password")
-//     .then(user=>{
-//         Post.find({postedBy:req.params.id})
-//     .populate("postedBy","userId name")
-//     .exec((err,posts)=>{
-//         if(err){
-//             return res.status(422).json({error:err})
-//         }
-//         res.json({user,posts})
-//     })
-// }).catch(err=>{
-//     return res.status(404).json({error:"User not found"})
-//     })
-// }
-
 
 exportS.follow = (req, res) =>{
-    const {following_id} = req.body;
-    client.query(`SELECT * FROM Following WHERE user_id = '${UserId}'`)
+    const {following_id , user_id} = req.body;
+    client.query(`INSERT INTO  Following  (following_id ,user_id) VAULES ('${following_id}' ,'${user_id}');`)   
     .then((data) =>{
             res.json(data)
         })
-    .catch(err=>{
+    .catch((err)=>{
             return res.status(422).json({
-                error:err})
+                error:"Server Error!! "
+            })
         })
 };
 
 
 exportS.unfollow = (req, res) =>{
-    const {following_id} = req.body;
-    client.query(`SELECT following_id FROM Following WHERE user_id = '${UserId}'`)
+    const {following_id } = req.body;
+    client.query(`DELETE * FROM Following WHERE following_id = '${following_id}'`)
+    .then((data) => {
+        return res.status(200).json({
+            message : "Unfollowed"
+        })
+    })
+    .catch((err) => {
+        return res.status(422).json({
+            error : "Server Error !!"
+        })
+    })
+     
    
 };
 
-
 exportS.update_profile = (req, res) =>{
-    // User.findByIdAndUpdate(req.user._id,{$set:{pic:req.body.pic}},{new:true},
-        (err,result)=>{
-            if(err){
-                return res.status(422).json({error:"pic cannot be posted"})
-            }
-      res.json(result)
-   // })
+    const {user_id , snap } = req.body;
+    client.query(`UPDATE users SET  profile_picture_url = '${snap}' WHERE user_id  = '${user_id}'`)
+     .then((data) => {
+        res.status(200).json({
+            message: "Successfully Updated ",
+          });
+     }) 
+     .catch((err) => {
+        console.log(err);
+        res.status(400).json({
+          message: "Database error occured",
+    });
+  })
 };
 
 
 exportS.search = (req , res) => {
-    const { user_id , }
+    const { username  } = req.body;
+    client.query(`SELECT username , profile ,  FROM users Where username = '${username}';`)
+    .then((data) =>{
+        res.json(data)
+    })
+    .catch(err => {
+        return res.status(422).json({
+            error : "User not found !!"
+        })
+    })
 };
