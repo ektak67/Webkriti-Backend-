@@ -5,7 +5,7 @@ const{Id , follow, unfollow,update_profile,search} = require("../controllers/use
 // router.get("/user/:id",requireLogIn, Id );
 router.put("/follow",requireLogIn, follow);
 router.put("/unfollow",requireLogIn, unfollow);
-router.put('/updateprofilepic',requireLogin,update_profile);
+router.put('/update_profile_pic',requireLogin,update_profile);
 router.post("/search-users", requireLogin , search);
 
 module.exports = router;

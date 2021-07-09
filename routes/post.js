@@ -13,7 +13,7 @@ router.put("/like",requireLogIn,like);
 router.put("/dislike",requireLogIn,dislike);
 router.put("/comment",requireLogIn,comment);
 router.delete("/deletepost/:postId",requireLogIn,deletePost);
-router.delete("/deletecomment/:postId",requireLogIn,deleteComment );
+router.delete("/deletecomment/:postId/:commentId",requireLogIn,deleteComment );
 
 
 module.exports = router;
