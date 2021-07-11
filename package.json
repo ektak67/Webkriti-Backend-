@@ -1,33 +1,32 @@
 {
   "name": "backend",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "nodemon app.js"
-  },
+  "version": "1.0.0",
+  "description": "**Backend files for PStore is here**",
+  "main": "index.js",
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "environment-variable-reader": "^1.2.0",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1",
-    "pg": "^8.6.0"
+    "express": "^4.17.1",
+    "jade": "^1.9.2",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.12",
+    "pg": "^8.6.0",
+    "source-map": "^0.1.43",
+    "uglify-js": "^2.2.5"
   },
-  "main": "app.js",
-  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ektak67/Webkriti-Backend-.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ektak67/Webkriti-Backend-/issues"
   },
-  "homepage": "https://github.com/ektak67/Webkriti-Backend-#readme",
-  "description": ""
+  "homepage": "https://github.com/ektak67/Webkriti-Backend-#readme"
 }

@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const { request } = require('express');
 const jwt = require('jsonwebtoken');
-const client = require("../configs/db");
+const client = require("../Configs/db");
 
-exportS.allPost = (req, res) => {
+exports.allPost = (req, res) => {
     const {username , user_id , caption , snap } = req.body
     client.query(`SELECT post_id ,userId name , caption , post_url FROM posts ORDER BY date_created`),
     clinet.query(`SELECT content ,userId name FROM comments`) 
@@ -15,7 +15,7 @@ exportS.allPost = (req, res) => {
     })
 }
 
-exportS.allfollowPost = (req, res) => {
+exports.allfollowPost = (req, res) => {
     const { post_url , content} = req.body ;
     client.query(`SELECT post_id ,userId name , caption , post_url FROM posts ORDER BY date_created`)
    
@@ -28,7 +28,7 @@ exportS.allfollowPost = (req, res) => {
 }
 
 
-exportS.createPost = (req, res) => {
+exports.createPost = (req, res) => {
     const { caption ,snap} = req.body 
    
     if(!snap ){
@@ -55,7 +55,7 @@ exportS.createPost = (req, res) => {
 }
 
 
-exportS.myPost = (req, res) => {
+exports.myPost = (req, res) => {
     const id = req.userId ;
     const {username , snap , caption } = request.body
     mypost = client.query(
@@ -69,7 +69,7 @@ exportS.myPost = (req, res) => {
     })
 }
 
-exportS(like )=(req,res)=>{
+exports.like = (req,res)=>{
     const {user_id , post_id } = req.body;
     client.query(`INSERT INTO Likes (user_id , posr_id) Values (${Likes.user_id , Likes.post_id})`)
     .then((data)=>{
@@ -82,7 +82,7 @@ exportS(like )=(req,res)=>{
         }
     )
 }
-exportS(dislike) =(req,res)=>{
+exports.dislike =(req,res)=>{
     const {user_id , post_id } = req.body;
     client.query(`DELETE FROM Likes WHERE user_id = `)
     .then((data)=>{
@@ -98,7 +98,7 @@ exportS(dislike) =(req,res)=>{
 }
 
 
-exportS.comment = (req, res) => {
+exports.comment = (req, res) => {
     const comment = {
         text :req.body.text ,
         postedBy : req.user.userId
@@ -116,7 +116,7 @@ exportS.comment = (req, res) => {
 }
 
 
-exportS.deletePost = (req, res) => {
+exports.deletePost = (req, res) => {
     const id  = parseInt(request.params.user_id);
     client.query(`DELETE FROM posts Where user_id = $1 ` ,[id] )
     .then( () =>{
@@ -128,7 +128,7 @@ exportS.deletePost = (req, res) => {
 }
 
 
-exportS.deleteComment = (req, res) => {
+exports.deleteComment = (req, res) => {
     const id  = parseInt(request.params.user_id);
     client.query(`DELETE FROM comments Where user_id = $1 ` ,[id] )
     .then( () =>{

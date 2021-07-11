@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const client = require("../configs/db");
+// const client = require("../Configs/db");
 
 exports.requireLogIn = (req, res, next) => {
   const token = req.headers.authorization;
